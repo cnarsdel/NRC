@@ -46,23 +46,27 @@ import numpy as np
 from NodeImpact import compute_distances, create_network
 from NodeImpact import normalize_distance_matrices
 from NodeImpact import PersistenceDiagramGenerator, PersistenceDiagramAnalyzer, NodeImpactAnalyzer
+import pwseqdist as pw
 
-# Example DNA sequences array for analysis
-sequences = np.array([
-    [1, 0, 3, 4, 5],
-    [2, 2, 3, 1, 0],
-    [0, 1, 4, 3, 2],
-    [2, 4, 0, 1, 3],
-])
+# Function to generate random DNA sequences
+def generate_random_dna_sequences(num_sequences, sequence_length):
+    nucleotides = ['A', 'T', 'C', 'G']
+    sequences = [''.join(np.random.choice(nucleotides, sequence_length)) for _ in range(num_sequences)]
+    return np.array(sequences)
+
+# Generate 10 random DNA sequences of length 16
+random_dna_sequences = generate_random_dna_sequences(10, 16)
+print(random_dna_sequences)
 
 # Step 1: Compute the distance matrix for sequences using the Euclidean metric
-distance_matrix = compute_distances(sequences, 'euclidean')
+distance_matrix = compute_distances(sequences, metric=pw.metrics.nw_metric)
 
 # Step 2: Normalize the computed distance matrix across the dataset
 normalized_matrices = normalize_distance_matrices([distance_matrix])
 
 # Step 3: Create a network graph from the normalized distance matrix
 graph = create_network(sequences, distance_matrix, threshold=1.5)
+print(graph.nodes(data=True))
 
 # Step 4: Generate persistence diagrams using topological data analysis techniques
 diagram_generator = PersistenceDiagramGenerator(normalized_matrices)
@@ -78,27 +82,8 @@ node_id = 0  # ID of the node in the graph
 node_analyzer = NodeImpactAnalyzer(graph, distance_matrix)
 node_impact = node_analyzer.analyze_impact(node_id)
 
+#Betticurves, Entropies (0-D,1-D)
 print("Node Impact Analysis:", node_impact)
 ```
 
 The example above follows a comprehensive workflow starting from sequence input, through network graph construction, and persistence diagram analysis, concluding with node impact assessment.
-
-## Contributing
-We welcome contributions to NodeImpact! Whether it's bug fixes, new features, or documentation improvements, your contributions can help enhance the usability and functionality of the package. Please follow these steps to contribute:
-    Fork the NodeImpact repository to your own GitHub account.
-    Create a new branch for your feature or bug fix.
-    Make your changes, ensuring code quality and functionality.
-    Commit the changes to your repository.
-    Open a pull request to merge your changes into the main NodeImpact repository.
-For substantial feature developments or changes, please begin an issue discussion to align on approach and expectations.
-
-
-### Explanation:
-
-- **Dependencies**: Detailed explanation of why each library is necessary, and command to install them.
-- **Usage**: Step-by-step guide to using NodeImpact in a sample workflow with DNA sequences.
-- **License**: Reinforcing open usage under the MIT license.
-- **Contributing**: Clear instructions for contributing to the project, encouraging community engagement.
-- **Contact**: Offering ways to get support and give feedback.
-
-This revised README file is thorough and should effectively communicate how to install, use, and contribute to NodeImpact. Adjust contact information to suit your preferences.
