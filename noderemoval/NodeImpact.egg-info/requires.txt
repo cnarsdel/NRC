@@ -1,0 +1,4 @@
+giotto-tda
+networkx
+numpy
+scipy
