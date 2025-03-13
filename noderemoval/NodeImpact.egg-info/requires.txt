@@ -1,4 +1,4 @@
-giotto-tda
 networkx
 numpy
+giotto-tda
 scipy
