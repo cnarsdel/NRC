@@ -5,7 +5,7 @@ from scipy.stats import chisquare
 import networkx as nx
 
 class NodeImpactAnalyzer:
-    def __init__(self, graph, distance_matrix, homology_dimensions=[0, 1]):
+    def __init__(self, graph, homology_dimensions=[0, 1]):
         """
         Initialize with a graph, distance matrix, and homology dimensions.
 
@@ -15,7 +15,7 @@ class NodeImpactAnalyzer:
         homology_dimensions (list of int, optional): Homology dimensions (default: [0, 1]).
         """
         self.graph = graph
-        self.distance_matrix = distance_matrix
+        self.distance_matrix = nx.to_numpy_array(graph)
         self.vr = VietorisRipsPersistence(metric='precomputed', homology_dimensions=homology_dimensions)
         self.pe = PersistenceEntropy(normalize=True)
         self.bc = BettiCurve()
@@ -31,14 +31,23 @@ class NodeImpactAnalyzer:
         tuple: Tuple containing Betti curves without node, Betti curves with node, entropy with node, entropy without node, chi-square value for Betti curves, and entropy change.
         """
         # Diagrams with node
-        diagram_with_node = self.vr.fit_transform([self.distance_matrix])[0]
-
+        dm=self.distance_matrix.copy()
+        dm[dm==0]=np.inf
+        np.fill_diagonal(dm,0)
+        diagram_with_node = self.vr.fit_transform([dm])[0]
+        
+        
         # Diagrams without node
         subgraph = self.graph.copy()
+        mapping = {old_id: new_id for new_id, old_id in enumerate(subgraph.nodes())}
+        subgraph = nx.relabel_nodes(subgraph, mapping)
+        node_id = mapping[node_id]
         subgraph.remove_node(node_id)
         sub_dm = np.delete(np.delete(self.distance_matrix, node_id, axis=0), node_id, axis=1)
+        sub_dm[sub_dm==0]=np.inf
+        np.fill_diagonal(sub_dm,0)
         diagram_without_node = self.vr.fit_transform([sub_dm])[0]
-
+        
         # Compute Betti curves and entropy
         betti_with_node = self.bc.fit_transform([diagram_with_node])[0][0]
         betti_with_node1 = self.bc.fit_transform([diagram_with_node])[0][1]
