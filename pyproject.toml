@@ -1,0 +1,45 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tcr-tda"
+version = "0.1.0"
+description = "TCR topology analysis and Node Removal Analysis (NRA) toolkit"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+
+authors = [
+  { name = "Sina Roshandel", email = "sina@example.com" }
+]
+
+dependencies = [
+  "numpy>=1.23",
+  "pandas>=1.5",
+  "networkx>=2.8",
+  "matplotlib>=3.6",
+  "pwseqdist>=0.3",
+  "tcrdist3>=0.2",
+  "giotto-tda>=0.6",
+]
+
+# Optional things that are nice-to-have but not strictly required
+[project.optional-dependencies]
+olga = [
+  "olga>=1.2",
+]
+plots = [
+  "matplotlib>=3.6",
+]
+
+[project.scripts]
+tcr-tda = "tcr_tda.cli:main"
+
+[tool.setuptools]
+packages = ["tcr_tda", "tcr_tda.nra"]
+
+# If you want automatic discovery instead, you could use:
+# [tool.setuptools.packages.find]
+# where = ["."]
+# include = ["tcr_tda*"]

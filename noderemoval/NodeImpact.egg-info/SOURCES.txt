@@ -1,6 +1,0 @@
-setup.py
-NodeImpact.egg-info/PKG-INFO
-NodeImpact.egg-info/SOURCES.txt
-NodeImpact.egg-info/dependency_links.txt
-NodeImpact.egg-info/requires.txt
-NodeImpact.egg-info/top_level.txt
